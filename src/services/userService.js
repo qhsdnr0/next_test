@@ -1,49 +1,46 @@
-const { date } = require("faker");
 const { Op } = require("sequelize");
-const models = require('../models');
+const User = require('../models').user;
 
-/**
- * 회원가입 서비스
- * @param {String} userEmail
- * @param {String} userPassword
- * @param {String} userNickName
- * @param {Date} userCreatedAt
- * @returns {Object} 
- */
+// /**
+//  * 회원가입 서비스
+//  * @param {String} email
+//  * @param {String} password
+//  * @param {String} nickName
+//  * @returns {Object} 가입한 유저 정보 { email, password, nickName }
+//  */
 exports.signup = async (
-  userEmail,
-  userPassword,
-  userNickName,
-  userCreatedAt,
+  email,
+  password,
+  nickName,
 ) => {
   try {
-    const newUser = await models.user.create({
-      email: userEmail,
-      password: userPassword,
-      nickname: userNickName,
-      createdAt: userCreatedAt,
+    // console.log(1);
+    const newUser = await User.create({
+      email: email,
+      password: password,
+      nickName: nickName,
     });
+    console.log(1);
     return newUser;
   } catch (err) {
     throw err;
   }
 };
 
-/**
- * 이메일 체크 서비스
- * @param {String} emailUsername
- * @param {String} emailDomain
- * @returns {Object} 이미 존재하는 유저 정보 { username, domain, password, isAdmin, salt, refreshToken, createdAt, updatedAt }
- */
-exports.checkEmail = async (userEmail) => {
+// /**
+//  * 이메일 체크 서비스
+//  * @param {String} email
+//  * @returns {Object} 
+//  */
+exports.checkEmail = async (email) => {
   try {
-    const alreadyUser = await models.user.findOne({
+    console.log(1);
+    const alreadyUser = await User.findOne({
       where: {
-        [Op.and]: [
-          { email: userEmail }
-        ]
+        email
       }
     });
+    console.log(1);
     return alreadyUser;
   } catch (err) {
     throw err;

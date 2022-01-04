@@ -6,12 +6,12 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       unique: true,
     },
-    email: { type: DataTypes.STRING, primaryKey: true, unique:true, allowNull: false },
+    email: { type: DataTypes.STRING, unique:true, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     nickName: { type: DataTypes.STRING, allowNull: false },
-    createdAt: { type: DataTypes.DATE, allowNull: false },
     loginAt: { type: DataTypes.DATE },
-  });
+  },
+  {timeStamps: false});
 
   return user;
 };
