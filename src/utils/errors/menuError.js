@@ -10,7 +10,7 @@ class ValidationError extends Error {
   }
 }
 
-//Code : 404 menuId에 해당하는 메뉴가 존재하지 않음
+//Code : 404 contentId에 해당하는 메뉴가 존재하지 않음
 
 class NotMatchedPostError extends Error {
   constructor(message = responseMessage.NO_MENU, status = statusCode.NOT_FOUND) {
