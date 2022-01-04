@@ -7,7 +7,7 @@ const userRouter = express.Router();
 
 
 //토큰생성
-userRouter.post(routes.token, userController.postToken);
+userRouter.post(routes.root, userController.postToken);
 
 
 module.exports = userRouter;

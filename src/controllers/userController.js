@@ -11,9 +11,7 @@ const logger = require('../utils/logger');
 //회원가입
 exports.postUser = async (req, res, next) => {
   try {
-      const email = req.body.email
-      const password = req.body.password
-      const nickName = req.body.nickName
+      const { email, password, nickName} = req.body;
     
     //입력값 확인
     if (email === undefined || password === undefined || nickName === undefined) {
@@ -23,11 +21,12 @@ exports.postUser = async (req, res, next) => {
     //이메일 중복 여부
     const isEmail = await userService.checkEmail(email);
     if (isEmail) throw new DuplicatedError()
-    console.log(isEmail);
 
     //암호화
-    const salt = encryption.makeSalt();
-    const encryptPassword = encryption.encrypt(password, salt);
+    // const salt = encryption.makeSalt();
+    console.log(password)
+    const encryptPassword = (await encryption.encrypt(password)).toString();
+    console.log(password, encryptPassword)
 
     //쿼리실행
     await userService.signup(email, encryptPassword, nickName);
@@ -50,19 +49,14 @@ exports.postToken = async (req, res, next) => {
     if (email === undefined || password === undefined) throw new ValidationError();
 
     //이메일 존재 여부
-    const isEmail = await userService.checkEmail(emailUsername, emailDomain);
+    const isEmail = await userService.checkEmail(email);
     if (!isEmail) throw new NotMatchedUserError();
 
-    //확인용 암호화
-    const { salt, password: realPassword } = isEmail;
-    const inputPassword = encryption.encrypt(password, salt);
-
-    //패스워드 불일치
-    if (inputPassword !== realPassword) throw new PasswordMissMatchError();
-
     //쿼리 실행
-    const user = await userService.signin(emailUsername, emailDomain, inputPassword);
-
+    const user = await userService.signin(email, password);
+    if (!user) {
+      throw new PasswordMissMatchError();
+    }
     //토큰 반환
     const { accessToken } = await jwt.sign(user);
 
