@@ -5,7 +5,8 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 
 const { logger, resFormatter } = require('./utils');
-const { statusCode, routes, responseMessage } = require('./globals');
+const { statusCode, responseMessage } = require('./globals');
+const routes = require('./globals/routes.js')
 
 const globalRouter = require('./routes/globalRouter');
 const userRouter = require('./routes/userRouter');
@@ -15,8 +16,12 @@ const { NoPageError } = require('./utils/errors/commonError');
 
 //DB연결
 
+const sequelize = require('./models').sequelize;
+
 //서버 사전작업
 const app = express();
+
+sequelize.sync();
 
 //미들웨어 설정
 app.use(helmet({

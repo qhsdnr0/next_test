@@ -11,23 +11,27 @@ const logger = require('../utils/logger');
 //회원가입
 exports.postUser = async (req, res, next) => {
   try {
-    const { email, password, nickName } = req.body;
-
+      const email = req.body.email
+      const password = req.body.password
+      const nickName = req.body.nickName
+    
     //입력값 확인
-    if (email === undefined || password === undefined) {
+    if (email === undefined || password === undefined || nickName === undefined) {
       throw new ValidationError();
     }
 
     //이메일 중복 여부
     const isEmail = await userService.checkEmail(email);
     if (isEmail) throw new DuplicatedError()
+    console.log(isEmail);
 
     //암호화
     const salt = encryption.makeSalt();
     const encryptPassword = encryption.encrypt(password, salt);
 
     //쿼리실행
-    await userService.signup(email, encryptPassword, nickName, new Date());
+    await userService.signup(email, encryptPassword, nickName);
+    
 
     return res.status(statusCode.CREATED)
       .send(resFormatter.success(responseMessage.CREATED_USER));
@@ -44,9 +48,6 @@ exports.postToken = async (req, res, next) => {
 
     //입력값 확인
     if (email === undefined || password === undefined) throw new ValidationError();
-
-    const emailUsername = email.split('@')[0];
-    const emailDomain = email.split('@')[1];
 
     //이메일 존재 여부
     const isEmail = await userService.checkEmail(emailUsername, emailDomain);
