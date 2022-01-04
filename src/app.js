@@ -5,7 +5,13 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 
 const { logger, resFormatter } = require('./utils');
+const { statusCode, routes, responseMessage } = require('./globals');
 
+const globalRouter = require('./routes/globalRouter');
+const userRouter = require('./routes/userRouter');
+const tokenRouter = require('./routes/tokenRouter');
+const contentRouter = require('./routes/contentRouter');
+const { NoPageError } = require('./utils/errors/commonError');
 
 //DB연결
 
@@ -21,7 +27,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-
+//라우터 설정
+app.use(routes.root, globalRouter);
+app.use(routes.user, userRouter);
+app.use(routes.token, tokenRouter);
+app.use(routes.content, contentRouter);
 
 // 아래는 에러 핸들링 함수들
 app.use(function (req, res, next) {

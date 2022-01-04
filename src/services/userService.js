@@ -7,7 +7,6 @@ const models = require('../models');
  * @param {String} userEmail
  * @param {String} userPassword
  * @param {String} userNickName
- * @param {Date} userLoginAt
  * @param {Date} userCreatedAt
  * @returns {Object} 
  */
@@ -15,7 +14,6 @@ exports.signup = async (
   userEmail,
   userPassword,
   userNickName,
-  userLoginAt,
   userCreatedAt,
 ) => {
   try {
@@ -23,8 +21,7 @@ exports.signup = async (
       email: userEmail,
       password: userPassword,
       nickname: userNickName,
-      loginAt,
-      createdAt,
+      createdAt: userCreatedAt,
     });
     return newUser;
   } catch (err) {
