@@ -1,22 +1,24 @@
 const { resFormatter, logger } = require('../utils');
 const { statusCode, responseMessage } = require('../globals');
+const Content = require('../models').content;
 
 const contentService = require('../services/contentService.js');
 
 const { ValidationError, NotMatchedPostError, UnAuthorizedError, NotNumberError } = require('../utils/errors/contentError');
+const { Forbidden } = require('http-errors');
 
 
 //콘텐츠 추가
 exports.postContent = async (req, res, next) => {
   try {
-    const user = req.decoded;
+    const userId = req.decoded.id;
     const { title, description, price, view, like, isActive } = req.body;
 
     //입력값 없으면 에러처리 NULL_VALUE : 400
     if (title === undefined) throw new ValidationError()
 
     //쿼리실행
-    await contentService.createContent(title, description, price, view, like, isActive);
+    await contentService.createContent(title, description, price, view, like, isActive, userId);
 
     //Respons Code : 201
     return res.status(statusCode.CREATED)
@@ -85,15 +87,14 @@ exports.putContent = async (req, res, next) => {
 //콘텐츠 삭제
 exports.deleteContent = async (req, res, next) => {
   try {
-    const id = req.decoded.id;
-    const isAdmin = req.decoded.isAdmin;
+    const userId = req.decoded.id;
     const contentId = Number(req.params.contentId);
 
-    //관리자가 아니면 에러처리 UNAUTHORIZED: 401
-    if (!isAdmin) throw new UnAuthorizedError();
 
     //입력값 없으면 에러처리 NULL_VALUE : 400
     if (isNaN(contentId)) throw new ValidationError()
+
+    if ((await Content.findByPk(contentId)).user_id !== userId) throw new UnAuthorizedError()
 
     //쿼리 실행
     let result = await contentService.deleteContent(contentId);

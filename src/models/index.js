@@ -45,6 +45,16 @@ db.sequelize = sequelize;
 db.user = require("./user")(sequelize, Sequelize);
 db.content = require("./content")(sequelize, Sequelize);
 
+const {user, content} = sequelize.models;
+user.hasMany(content, {
+  foreignKey: 'user_id',
+  sourceKey: 'id'
+})
+content.belongsTo(user, {
+  foreignKey: 'user_id',
+  sourceKey: 'id'
+})
+
 //DB연결
 // const connectDB = async () => {
 //   try {
