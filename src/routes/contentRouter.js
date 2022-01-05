@@ -8,10 +8,10 @@ const contentRouter = express.Router();
 
 
 //전체 콘텐츠 조회
-contentRouter.get(routes.content, contentController.getContentList);
+contentRouter.get(routes.root, contentController.getContentList);
 
 //콘텐츠 추가(관리자 전용)
-contentRouter.post(routes.content, checkToken, contentController.postContent);
+contentRouter.post(routes.root, checkToken, contentController.postContent);
 
 //단일 콘텐츠 조회
 contentRouter.get(routes.contentDetail, contentController.getContent);

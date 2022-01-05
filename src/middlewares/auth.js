@@ -20,8 +20,8 @@ exports.checkToken = async (req, res, next) => {
     }
 
     //토큰 인증(확인)
-    const user = await jwt.verify(authorization);
-
+    const user = (await jwt.verify(authorization)).dataValues;
+    
     //토큰 만료되는 경우 
     if (user === TOKEN_EXPIRED) {
         return res.status(statusCode.UNAUTHORIZED)
@@ -33,7 +33,7 @@ exports.checkToken = async (req, res, next) => {
         return res.status(statusCode.UNAUTHORIZED)
             .send(util.fail(responseMessage.INVALID_TOKEN));
     }
-    if (user.username === undefined) {
+    if (user.id === undefined) {
         return res.status(statusCode.UNAUTHORIZED)
             .send(util.fail(responseMessage.INVALID_TOKEN));
     }

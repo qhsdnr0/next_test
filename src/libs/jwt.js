@@ -1,6 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken');
 const secretKey = require('../configs/secretKey.js');
 const userService = require('../services/userService.js');
+const User = require('../models').user;
 const logger = require('../utils/logger.js');
 
 const TOKEN_EXPIRED = -3;
@@ -10,9 +11,7 @@ module.exports = {
     //토큰 생성
     sign: async user => {
         const payload = {
-            "domain": user.domain,
-            "username": user.username,
-            "isAdmin": user.isAdmin
+            "id": user.id,
         };
 
         const result = {
@@ -28,13 +27,13 @@ module.exports = {
     verify: async (token) => {
         let decoded;
         try {
-            decoded = jsonwebtoken.verify(token, secretKey.secretKey);
+            decoded = jsonwebtoken.verify(token, secretKey.secretKey, secretKey.options);
         } catch (err) {
             if (err.message === 'jwt expired') return TOKEN_EXPIRED;
             if (err.message === 'invalid token') return TOKEN_INVALID;
             return TOKEN_INVALID;
         }
-        return decoded;
+        return await User.findByPk(decoded.id);
     },
 
 

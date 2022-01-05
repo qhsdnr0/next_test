@@ -9,21 +9,18 @@ const { ValidationError, NotMatchedPostError, UnAuthorizedError, NotNumberError 
 //콘텐츠 추가
 exports.postContent = async (req, res, next) => {
   try {
-    const isAdmin = req.decoded.isAdmin;
-    const { category, name, description } = req.body;
-
-    //관리자가 아니면 에러처리 UNAUTHORIZED: 401
-    if (!isAdmin) throw new UnAuthorizedError();
+    const user = req.decoded;
+    const { title, description, price, view, like, isActive } = req.body;
 
     //입력값 없으면 에러처리 NULL_VALUE : 400
-    if (category === undefined || name === undefined || description === undefined) throw new ValidationError()
+    if (title === undefined) throw new ValidationError()
 
     //쿼리실행
-    let content = await contentService.createContent(category, name, description);
+    await contentService.createContent(title, description, price, view, like, isActive);
 
     //Respons Code : 201
     return res.status(statusCode.CREATED)
-      .send(resFormatter.success(responseMessage.CREATE_CONTENT_SUCCESS, { id: content.id }));
+      .send(resFormatter.success(responseMessage.CREATE_CONTENT_SUCCESS));
 
   } catch (err) {
     next(err);
@@ -116,14 +113,12 @@ exports.deleteContent = async (req, res, next) => {
 //전체 콘텐츠 조회(페이지네이션 필요)
 exports.getContentList = async (req, res, next) => {
   try {
-    const page = Number(req.query.page);
-    const limit = 5;
-
-    //입력값 없으면 에러처리 NULL_VALUE : 400
-    if (isNaN(page)) throw new ValidationError()
+    const offset = Number(req.query.offset) | 0;
+    const limit = Number(req.query.limit) | 0;
+    var isActive = req.query.isActive === undefined ? 1 : Number(req.query.isActive);
 
     //쿼리 실행
-    const contentList = await contentService.readContentList(page, limit);
+    const contentList = await contentService.readContentList(offset, limit, isActive);
 
     //Response 200 OK
     return res.status(statusCode.OK)
