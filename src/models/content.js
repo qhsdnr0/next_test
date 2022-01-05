@@ -8,13 +8,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     title: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.STRING },
-    price: { type: DataTypes.INTEGER, default: 0 },
-    view: { type: DataTypes.INTEGER, default: 0 },
-    like: { type: DataTypes.INTEGER, default: 0 },
-    isActive: { type: DataTypes.BOOLEAN, allowNull: false, default: false },
-    createdAt: { type: DataTypes.DATE, allowNull: false }
-  });
-
+    price: { type: DataTypes.INTEGER, defaultValue: 0 },
+    view: { type: DataTypes.INTEGER, defaultValue: 0 },
+    like: { type: DataTypes.INTEGER, defaultValue: 0 },
+    isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  },
+  {timeStamps: false});
 
   return content;
 };

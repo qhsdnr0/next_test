@@ -1,4 +1,5 @@
 const { statusCode, responseMessage } = require('../globals');
+const secretInfo = require('../configs/secretKey');
 const encryption = require('../libs/encryption.js');
 const jwt = require('../libs/jwt.js');
 const { resFormatter } = require('../utils');
@@ -24,9 +25,8 @@ exports.postUser = async (req, res, next) => {
 
     //암호화
     // const salt = encryption.makeSalt();
-    console.log(password)
     const encryptPassword = (await encryption.encrypt(password)).toString();
-    console.log(password, encryptPassword)
+    
 
     //쿼리실행
     await userService.signup(email, encryptPassword, nickName);
