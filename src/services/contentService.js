@@ -8,6 +8,7 @@ exports.createContent = async (
     view,
     like,
     isActive,
+    userId
     ) => {
     try {
         const newContent = await Content.create({
@@ -17,6 +18,7 @@ exports.createContent = async (
             view: view,
             like: like,
             isActive: isActive,
+            user_id: userId
         });
         return newContent;
     } catch (err) {
